@@ -22,7 +22,7 @@ func newTestVM(t *testing.T) (*Vm, func()) {
 }
 
 func readWatFile(fileName string) []byte {
-	code, err := os.ReadFile(fmt.Sprintf("./../wasm/%s.wat", fileName))
+	code, err := os.ReadFile(fmt.Sprintf("./wasm/%s.wat", fileName))
 	if err != nil {
 		panic(err)
 	}
@@ -30,7 +30,7 @@ func readWatFile(fileName string) []byte {
 }
 
 func readWasmFile(fileName string) []byte {
-	code, err := os.ReadFile(fmt.Sprintf("./../wasm/%s.wasm", fileName))
+	code, err := os.ReadFile(fmt.Sprintf("./wasm/%s.wasm", fileName))
 	if err != nil {
 		panic(err)
 	}

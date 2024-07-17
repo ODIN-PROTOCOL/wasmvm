@@ -1,6 +1,5 @@
 package cosmwasm
 
-import "C"
 import "github.com/CosmWasm/wasmvm/v2/internal/api"
 
 type Vm struct {
