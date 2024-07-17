@@ -17,6 +17,10 @@ mod test_utils;
 mod tests;
 mod version;
 mod vtables;
+mod oracle_calls;
+mod vm;
+mod env;
+mod span;
 
 // We only interact with this crate via `extern "C"` interfaces, not those public
 // exports. There are no guarantees those exports are stable.

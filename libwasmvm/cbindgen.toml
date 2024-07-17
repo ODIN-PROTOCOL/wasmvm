@@ -52,6 +52,7 @@ style = "both"
 include = [
     "GoError",
     "ErrnoValue",
+    "Error"
 ]
 exclude = []
 # prefix = "CAPI_"
@@ -97,7 +98,7 @@ derive_gte = false
 rename_variants = "None"
 # must_use = "MUST_USE_ENUM"
 add_sentinel = false
-prefix_with_name = false
+prefix_with_name = true
 derive_helper_methods = false
 derive_const_casts = false
 derive_mut_casts = false
@@ -126,8 +127,8 @@ bitflags = false
 ############## Options for How Your Rust library Should Be Parsed ##############
 
 [parse]
-parse_deps = false
-# include = []
+parse_deps = true
+include = ["owasm-vm"]
 exclude = []
 clean = false
 extra_bindings = []
