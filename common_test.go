@@ -1,3 +1,5 @@
+//go:build cgo && !nolink_libwasmvm
+
 package cosmwasm
 
 import (
