@@ -402,9 +402,6 @@ jobs:
           name: Build static library for Alpine
           command: make release-build-alpine
       - run:
-          name: Build static library for MacOS
-          command: make release-build-macos-static
-      - run:
           name: Debug build results
           command: ls -l ./internal/api
       # Deploy to GitHub releases on tag builds. At some point we might want to extract
@@ -420,7 +417,6 @@ jobs:
                   # Static (from build)
                   cp ./internal/api/libwasmvm_muslc.x86_64.a artifacts/
                   cp ./internal/api/libwasmvm_muslc.aarch64.a artifacts/
-                  cp ./internal/api/libwasmvmstatic_darwin.a artifacts/
 
                   # Shared (from git)
                   cp ./internal/api/libwasmvm.aarch64.so artifacts/
