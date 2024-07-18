@@ -1,34 +1,17 @@
 package cosmwasm
 
 import (
-	"io/ioutil"
-	"os"
-	exect "os/exec"
+	wasmtime "github.com/bytecodealliance/wasmtime-go/v20"
 )
 
 // wat2wasm compiles the given Wat content to Wasm, relying on the host's wat2wasm program.
-func wat2wasm(wat []byte) []byte {
-	inputFile, err := os.CreateTemp("", "input")
+func wat2wasm(wat string) []byte {
+	wasm, err := wasmtime.Wat2Wasm(wat)
 	if err != nil {
 		panic(err)
 	}
-	defer os.Remove(inputFile.Name())
-	outputFile, err := os.CreateTemp("", "output")
-	if err != nil {
-		panic(err)
-	}
-	defer os.Remove(outputFile.Name())
-	if _, err := inputFile.Write(wat); err != nil {
-		panic(err)
-	}
-	if err := exect.Command("wat2wasm", inputFile.Name(), "-o", outputFile.Name()).Run(); err != nil {
-		panic(err)
-	}
-	output, err := ioutil.ReadFile(outputFile.Name())
-	if err != nil {
-		panic(err)
-	}
-	return output
+
+	return wasm
 }
 
 type RawRequest struct {

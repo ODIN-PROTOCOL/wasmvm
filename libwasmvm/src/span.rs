@@ -43,7 +43,13 @@ impl Span {
         if self.len + data.len() > self.cap {
             return Error::SpanTooSmallError;
         }
-        unsafe { std::ptr::copy(data.as_ptr(), self.ptr.offset(self.len as isize), data.len()) }
+        unsafe {
+            std::ptr::copy(
+                data.as_ptr(),
+                self.ptr.add(self.len),
+                data.len(),
+            )
+        }
         self.len += data.len();
         Error::NoError
     }

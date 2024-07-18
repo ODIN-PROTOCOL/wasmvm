@@ -68,7 +68,13 @@ pub extern "C" fn do_run(
 ) -> Error {
     if !cache.is_null() {
         let vm_querier = VMQuerier::new(env);
-        match owasm_vm::run(to_cache(cache).unwrap(), code.read(), gas_limit, is_prepare, vm_querier) {
+        match owasm_vm::run(
+            to_cache(cache).unwrap(),
+            code.read(),
+            gas_limit,
+            is_prepare,
+            vm_querier,
+        ) {
             Ok(gas_used) => {
                 output.gas_used = gas_used;
                 Error::NoError
