@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/ODIN-PROTOCOL/wasmvm/v2/internal/api"
+	"github.com/ODIN-PROTOCOL/wasmvm/v2/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -51,7 +52,7 @@ func TestFailCompileInvalidContent(t *testing.T) {
 	code := []byte("invalid content")
 	spanSize := 1 * 1024 * 1024
 	_, err := vm.Compile(code, spanSize)
-	require.Equal(t, api.ErrValidation, err)
+	require.Equal(t, types.ErrValidation, err)
 }
 func TestRuntimeError(t *testing.T) {
 	vm, release := newTestVM(t)
@@ -74,7 +75,7 @@ func TestRuntimeError(t *testing.T) {
 		`))
 	code, _ := vm.Compile(wasm, spanSize)
 	_, err := vm.Prepare(code, 250000000000, NewMockEnv([]byte(""), 1024))
-	require.Equal(t, api.ErrRuntime, err)
+	require.Equal(t, types.ErrRuntime, err)
 }
 
 func TestInvaildSignature(t *testing.T) {
@@ -99,7 +100,7 @@ func TestInvaildSignature(t *testing.T) {
 	  `))
 	code, _ := vm.Compile(wasm, spanSize)
 	_, err := vm.Prepare(code, 250000000000, NewMockEnv([]byte(""), 1024))
-	require.Equal(t, api.ErrBadEntrySignature, err)
+	require.Equal(t, types.ErrBadEntrySignature, err)
 }
 
 func TestGasLimit(t *testing.T) {
@@ -129,7 +130,7 @@ func TestGasLimit(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, api.RunOutput{GasUsed: 70519550000}, output)
 	_, err = vm.Prepare(code, 60000000000, NewMockEnv([]byte(""), 1024))
-	require.Equal(t, api.ErrOutOfGas, err)
+	require.Equal(t, types.ErrOutOfGas, err)
 }
 
 func TestCompileErrorNoMemory(t *testing.T) {
@@ -154,8 +155,8 @@ func TestCompileErrorNoMemory(t *testing.T) {
 
 	  `))
 	code, err := vm.Compile(wasm, spanSize)
-	require.Equal(t, api.ErrBadMemorySection, err)
-	require.Equal(t, []uint8([]byte{}), code)
+	require.Equal(t, types.ErrBadMemorySection, err)
+	require.Equal(t, []byte{}, code)
 }
 
 func TestCompileErrorMinimumMemoryExceed(t *testing.T) {
@@ -200,7 +201,7 @@ func TestCompileErrorMinimumMemoryExceed(t *testing.T) {
 
 	  `))
 	_, err = vm.Compile(wasm, spanSize)
-	require.Equal(t, api.ErrBadMemorySection, err)
+	require.Equal(t, types.ErrBadMemorySection, err)
 }
 
 func TestCompileErrorSetMaximumMemory(t *testing.T) {
@@ -226,8 +227,8 @@ func TestCompileErrorSetMaximumMemory(t *testing.T) {
 
 	  `))
 	code, err := vm.Compile(wasm, spanSize)
-	require.Equal(t, api.ErrBadMemorySection, err)
-	require.Equal(t, []uint8([]byte{}), code)
+	require.Equal(t, types.ErrBadMemorySection, err)
+	require.Equal(t, []byte{}, code)
 }
 
 func TestCompileErrorCheckWasmImports(t *testing.T) {
@@ -255,8 +256,8 @@ func TestCompileErrorCheckWasmImports(t *testing.T) {
 		(export "execute" (func 1)))
 		`))
 	code, err := vm.Compile(wasm, spanSize)
-	require.Equal(t, api.ErrInvalidImports, err)
-	require.Equal(t, []uint8([]byte{}), code)
+	require.Equal(t, types.ErrInvalidImports, err)
+	require.Equal(t, []byte{}, code)
 }
 
 func TestCompileErrorCheckWasmExports(t *testing.T) {
@@ -282,8 +283,8 @@ func TestCompileErrorCheckWasmExports(t *testing.T) {
 		(export "prepare" (func 0)))
 		`))
 	code, err := vm.Compile(wasm, spanSize)
-	require.Equal(t, api.ErrInvalidExports, err)
-	require.Equal(t, []uint8([]byte{}), code)
+	require.Equal(t, types.ErrInvalidExports, err)
+	require.Equal(t, []byte{}, code)
 }
 
 func TestStackOverflow(t *testing.T) {
@@ -301,7 +302,7 @@ func TestStackOverflow(t *testing.T) {
 	  `))
 	code, _ := vm.Compile(wasm, spanSize)
 	_, err := vm.Prepare(code, 250000000000, NewMockEnv([]byte(""), 1024))
-	require.Equal(t, api.ErrRuntime, err)
+	require.Equal(t, types.ErrRuntime, err)
 }
 
 func TestMemoryGrow(t *testing.T) {
@@ -345,7 +346,7 @@ func TestMemoryGrow(t *testing.T) {
 	  `))
 	code, _ = vm.Compile(wasm, spanSize)
 	_, err = vm.Prepare(code, 250000000000, NewMockEnv([]byte(""), 1024))
-	require.Equal(t, api.ErrRuntime, err)
+	require.Equal(t, types.ErrRuntime, err)
 }
 
 func TestBadPointer(t *testing.T) {
@@ -371,7 +372,7 @@ func TestBadPointer(t *testing.T) {
 	code, err := vm.Compile(wasm, spanSize)
 	require.NoError(t, err)
 	_, err = vm.Prepare(code, 250000000000, NewMockEnv([]byte(""), 1024))
-	require.Equal(t, api.ErrMemoryOutOfBound, err)
+	require.Equal(t, types.ErrMemoryOutOfBound, err)
 
 	wasm = wat2wasm([]byte(`(module
 		(type (;0;) (func (param i64 i64 i64 i64)))
@@ -393,7 +394,7 @@ func TestBadPointer(t *testing.T) {
 	code, err = vm.Compile(wasm, spanSize)
 	require.NoError(t, err)
 	_, err = vm.Prepare(code, 250000000000, NewMockEnv([]byte(""), 1024))
-	require.Equal(t, api.ErrMemoryOutOfBound, err)
+	require.Equal(t, types.ErrMemoryOutOfBound, err)
 }
 
 func TestSpanTooSmall(t *testing.T) {
@@ -443,7 +444,7 @@ func TestSpanTooSmall(t *testing.T) {
 	code, err = vm.Compile(wasm, spanSize)
 	require.NoError(t, err)
 	_, err = vm.Prepare(code, 250000000000, NewMockEnv([]byte(""), 1024))
-	require.Equal(t, api.ErrSpanTooSmall, err)
+	require.Equal(t, types.ErrSpanTooSmall, err)
 }
 
 func TestBadImportSignature(t *testing.T) {
@@ -467,5 +468,5 @@ func TestBadImportSignature(t *testing.T) {
 	code, err := vm.Compile(wasm, spanSize)
 	require.NoError(t, err)
 	_, err = vm.Prepare(code, 250000000000, NewMockEnv([]byte(""), 1024))
-	require.Equal(t, api.ErrInstantiation, err)
+	require.Equal(t, types.ErrInstantiation, err)
 }
