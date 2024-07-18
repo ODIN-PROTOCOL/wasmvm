@@ -18,7 +18,8 @@ pub struct EnvDispatcher {
     pub get_execute_time: extern "C" fn(*mut env_t, &mut i64) -> Error,
     pub get_ans_count: extern "C" fn(*mut env_t, &mut i64) -> Error,
     pub ask_external_data: extern "C" fn(*mut env_t, eid: i64, did: i64, data: Span) -> Error,
-    pub get_external_data_status: extern "C" fn(*mut env_t, eid: i64, vid: i64, status: &mut i64) -> Error,
+    pub get_external_data_status:
+        extern "C" fn(*mut env_t, eid: i64, vid: i64, status: &mut i64) -> Error,
     pub get_external_data: extern "C" fn(*mut env_t, eid: i64, vid: i64, data: &mut Span) -> Error,
 }
 
