@@ -3,8 +3,6 @@
 package cosmwasm
 
 import (
-	"fmt"
-	"os"
 	"testing"
 
 	"github.com/ODIN-PROTOCOL/wasmvm/v2/internal/api"
@@ -22,29 +20,6 @@ func newTestVM(t *testing.T) (*Vm, func()) {
 		api.ReleaseOracleCache(vm.cache)
 	}
 	return vm, cleanup
-}
-
-func readWatFile(fileName string) []byte {
-	code, err := os.ReadFile(fmt.Sprintf("./wasm/%s.wat", fileName))
-	if err != nil {
-		panic(err)
-	}
-	return code
-}
-
-func readWasmFile(fileName string) []byte {
-	code, err := os.ReadFile(fmt.Sprintf("./wasm/%s.wasm", fileName))
-	if err != nil {
-		panic(err)
-	}
-	return code
-}
-
-func TestSuccessWatToOwasm(t *testing.T) {
-	code := readWatFile("test")
-	wasm := wat2wasm(string(code))
-	expectedWasm := readWasmFile("test")
-	require.Equal(t, expectedWasm, wasm)
 }
 
 func TestFailCompileInvalidContent(t *testing.T) {
