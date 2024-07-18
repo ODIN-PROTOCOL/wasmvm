@@ -655,13 +655,6 @@ struct UnmanagedVector new_unmanaged_vector(bool nil, const uint8_t *ptr, uintpt
 
 void destroy_unmanaged_vector(struct UnmanagedVector v);
 
-/**
- * Returns a version number of this library as a C string.
- *
- * The string is owned by libwasmvm and must not be mutated or destroyed by the caller.
- */
-const char *version_str(void);
-
 struct oracle_cache_t *oracle_init_cache(uint32_t size);
 
 void oracle_release_cache(struct oracle_cache_t *cache);
@@ -674,5 +667,12 @@ Error do_run(struct oracle_cache_t *cache,
              bool is_prepare,
              struct Env env,
              struct RunOutput *output);
+
+/**
+ * Returns a version number of this library as a C string.
+ *
+ * The string is owned by libwasmvm and must not be mutated or destroyed by the caller.
+ */
+const char *version_str(void);
 
 #endif /* wasmvm_bindings_h */
