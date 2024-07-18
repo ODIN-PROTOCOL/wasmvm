@@ -8,7 +8,7 @@ export PATH="/opt/osxcross/target/bin:$PATH"
 export LIBZ_SYS_STATIC=1
 
 apt-get update
-apt-get install -y libgmp3-dev
+apt-get install -y pkg-config libhidapi-dev libev-dev libgmp-dev build-essential
 
 # See https://github.com/CosmWasm/wasmvm/issues/222#issuecomment-880616953 for two approaches to
 # enable stripping through cargo (if that is desired).
