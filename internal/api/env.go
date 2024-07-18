@@ -2,6 +2,7 @@ package api
 
 // #include "bindings.h"
 import "C"
+
 import (
 	"unsafe"
 )

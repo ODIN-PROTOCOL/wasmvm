@@ -25,6 +25,7 @@ package api
 // typedef Span (*get_external_data_fn)(env_t*, int64_t eid, int64_t vid);
 // Span cGetExternalData_cgo(env_t *e, int64_t eid, int64_t vid);
 import "C"
+
 import (
 	"unsafe"
 )

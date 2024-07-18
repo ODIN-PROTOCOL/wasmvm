@@ -1,3 +1,5 @@
+//go:build cgo && !nolink_libwasmvm
+
 package cosmwasm
 
 import "github.com/ODIN-PROTOCOL/wasmvm/v2/internal/api"
@@ -8,7 +10,6 @@ type Vm struct {
 
 func NewOracleVm(size uint32) (*Vm, error) {
 	cache, err := api.InitOracleCache(size)
-
 	if err != nil {
 		return nil, err
 	}

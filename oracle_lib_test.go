@@ -1,3 +1,5 @@
+//go:build cgo && !nolink_libwasmvm
+
 package cosmwasm
 
 import (
@@ -54,6 +56,7 @@ func TestFailCompileInvalidContent(t *testing.T) {
 	_, err := vm.Compile(code, spanSize)
 	require.Equal(t, types.ErrValidation, err)
 }
+
 func TestRuntimeError(t *testing.T) {
 	vm, release := newTestVM(t)
 	defer release()

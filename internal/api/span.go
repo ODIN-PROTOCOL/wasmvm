@@ -3,6 +3,7 @@ package api
 // #include "bindings.h"
 // #include <string.h>
 import "C"
+
 import "unsafe"
 
 // newSpan creates a span with the given capacity and zero length, ready to be written.
