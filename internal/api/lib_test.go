@@ -15,7 +15,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/CosmWasm/wasmvm/v2/types"
+	"github.com/ODIN-PROTOCOL/wasmvm/v2/types"
 )
 
 const (
@@ -38,7 +38,7 @@ func TestInitAndReleaseCache(t *testing.T) {
 }
 
 // wasmd expects us to create the base directory
-// https://github.com/CosmWasm/wasmd/blob/v0.30.0/x/wasm/keeper/keeper.go#L128
+// https://github.com/ODIN-PROTOCOL/wasmd/blob/v0.30.0/x/wasm/keeper/keeper.go#L128
 func TestInitCacheWorksForNonExistentDir(t *testing.T) {
 	tmpdir, err := os.MkdirTemp("", "wasmvm-testing")
 	require.NoError(t, err)

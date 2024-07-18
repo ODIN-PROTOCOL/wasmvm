@@ -1,6 +1,6 @@
 package cosmwasm
 
-import "github.com/CosmWasm/wasmvm/v2/internal/api"
+import "github.com/ODIN-PROTOCOL/wasmvm/v2/internal/api"
 
 type Vm struct {
 	cache api.OracleCache

@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/CosmWasm/wasmvm/v2/internal/api"
+	"github.com/ODIN-PROTOCOL/wasmvm/v2/internal/api"
 	"github.com/stretchr/testify/require"
 )
 

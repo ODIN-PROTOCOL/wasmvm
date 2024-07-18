@@ -1,4 +1,4 @@
-module github.com/CosmWasm/wasmvm/v2
+module github.com/ODIN-PROTOCOL/wasmvm/v2
 
 go 1.21
 

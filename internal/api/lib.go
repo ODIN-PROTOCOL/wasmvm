@@ -13,7 +13,7 @@ import (
 
 	"golang.org/x/sys/unix"
 
-	"github.com/CosmWasm/wasmvm/v2/types"
+	"github.com/ODIN-PROTOCOL/wasmvm/v2/types"
 )
 
 // Value types

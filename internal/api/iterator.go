@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/CosmWasm/wasmvm/v2/types"
+	"github.com/ODIN-PROTOCOL/wasmvm/v2/types"
 )
 
 // frame stores all Iterators for one contract call

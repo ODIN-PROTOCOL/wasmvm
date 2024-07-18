@@ -5,7 +5,7 @@ import (
 	"math"
 	"os"
 
-	wasmvm "github.com/CosmWasm/wasmvm/v2"
+	wasmvm "github.com/ODIN-PROTOCOL/wasmvm/v2"
 )
 
 const (
