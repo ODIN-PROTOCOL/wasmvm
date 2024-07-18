@@ -10,7 +10,7 @@ pub struct VMQuerier {
 
 impl VMQuerier {
     pub fn new(env: Env) -> VMQuerier {
-        VMQuerier { env: env }
+        VMQuerier { env }
     }
 }
 

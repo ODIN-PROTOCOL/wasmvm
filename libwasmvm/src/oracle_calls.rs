@@ -6,7 +6,6 @@ use crate::vm::VMQuerier;
 use failure::{bail, Error as FailureError};
 use std::panic::catch_unwind;
 
-use owasm_vm;
 use owasm_vm::cache::{Cache, CacheOptions};
 use owasm_vm::error::Error;
 
@@ -35,8 +34,7 @@ pub extern "C" fn oracle_init_cache(size: u32) -> *mut oracle_cache_t {
 fn oracle_do_init_cache(size: u32) -> Result<*mut Cache, FailureError> {
     let cache = Cache::new(CacheOptions { cache_size: size });
     let out = Box::new(cache);
-    let res = Ok(Box::into_raw(out));
-    res
+    Ok(Box::into_raw(out))
 }
 
 #[no_mangle]
