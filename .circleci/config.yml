@@ -435,13 +435,15 @@ jobs:
                   # Check if tag is a version without suffix (e.g. -rc or -beta) and
                   # set prerelease flag accordingly
                   [[ "$TAG" =~ ^v[0-9]+.[0-9]+.[0-9]+$ ]] || PRERELEASE=-prerelease
+                  CIRCLE_PROJECT_USERNAME_L="ODIN-PROTOCOL"
+                  CIRCLE_PROJECT_REPONAME_L="wasmvm"
                   echo $CIRCLE_PROJECT_USERNAME
                   echo $CIRCLE_PROJECT_REPONAME
                   echo $CIRCLE_SHA1
                   echo $PRERELEASE
                   echo $TAG
                   ghr -t "$GITHUB_TOKEN" \
-                    -u "$CIRCLE_PROJECT_USERNAME" -r "$CIRCLE_PROJECT_REPONAME" \
+                    -u "$CIRCLE_PROJECT_USERNAME_L" -r "$CIRCLE_PROJECT_REPONAME_L" \
                     -c "$CIRCLE_SHA1" \
                     -n "$TITLE" -b "$BODY" \
                     -delete \
