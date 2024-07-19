@@ -126,7 +126,7 @@ libs:
 ```
 
 Then in the repo root, `make release-build` will use the above docker image and
-copy the generated `{so,dylib}` files into `internal/api` directory to be
+copy the generated `{so,dylib}` files into `api` directory to be
 linked.
 
 ## Future Work

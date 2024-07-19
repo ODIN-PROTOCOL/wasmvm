@@ -41,7 +41,7 @@ The Go code consistes of three packages:
 
 1. The types (the `github.com/CosmWasm/wasmvm/types` import), using
    `package types`
-2. The internal package `internal/api`, using `package api`
+2. The internal package `api`, using `package api`
 3. This repo (the `github.com/CosmWasm/wasmvm` import), using `package cosmwasm`
 
 The dependencies between them are as follows:
@@ -72,11 +72,11 @@ go build ./types
 CGO_ENABLED=0 go build ./types
 ```
 
-#### Package internal/api
+#### Package api
 
 This package contains the code binding the libwasmvm build to the Go code. All
 low level FFI handling code belongs there. This package can only be built using
-cgo. Uing the `internal/` convention makes this package fully private.
+cgo.
 
 #### Package github.com/CosmWasm/wasmvm
 

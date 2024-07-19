@@ -5,7 +5,7 @@ package cosmwasm
 import (
 	"testing"
 
-	"github.com/ODIN-PROTOCOL/wasmvm/v2/internal/api"
+	"github.com/ODIN-PROTOCOL/wasmvm/v2/api"
 	"github.com/ODIN-PROTOCOL/wasmvm/v2/types"
 	"github.com/stretchr/testify/require"
 )
