@@ -28,6 +28,8 @@ import "C"
 
 import (
 	"unsafe"
+
+	"github.com/ODIN-PROTOCOL/wasmvm/v2/types"
 )
 
 type RunOutput struct {
@@ -43,7 +45,7 @@ func Compile(code []byte, spanSize int) ([]byte, error) {
 	return readSpan(outputSpan), err
 }
 
-func OracleRun(cache OracleCache, code []byte, gasLimit uint64, isPrepare bool, env EnvInterface) (RunOutput, error) {
+func OracleRun(cache OracleCache, code []byte, gasLimit uint64, isPrepare bool, env types.EnvInterface) (RunOutput, error) {
 	codeSpan := copySpan(code)
 	defer freeSpan(codeSpan)
 	envIntl := createEnvIntl(env)

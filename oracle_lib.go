@@ -2,7 +2,10 @@
 
 package cosmwasm
 
-import "github.com/ODIN-PROTOCOL/wasmvm/v2/internal/api"
+import (
+	"github.com/ODIN-PROTOCOL/wasmvm/v2/internal/api"
+	"github.com/ODIN-PROTOCOL/wasmvm/v2/types"
+)
 
 type Vm struct {
 	cache api.OracleCache
@@ -23,10 +26,10 @@ func (vm Vm) Compile(code []byte, spanSize int) ([]byte, error) {
 	return api.Compile(code, spanSize)
 }
 
-func (vm Vm) Prepare(code []byte, gasLimit uint64, env api.EnvInterface) (api.RunOutput, error) {
+func (vm Vm) Prepare(code []byte, gasLimit uint64, env types.EnvInterface) (api.RunOutput, error) {
 	return api.OracleRun(vm.cache, code, gasLimit, true, env)
 }
 
-func (vm Vm) Execute(code []byte, gasLimit uint64, env api.EnvInterface) (api.RunOutput, error) {
+func (vm Vm) Execute(code []byte, gasLimit uint64, env types.EnvInterface) (api.RunOutput, error) {
 	return api.OracleRun(vm.cache, code, gasLimit, false, env)
 }
