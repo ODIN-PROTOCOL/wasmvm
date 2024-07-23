@@ -40,7 +40,7 @@ build-rust: build-rust-release
 # In order to use "--features backtraces" here we need a Rust nightly toolchain, which we don't have by default
 build-rust-debug:
 	(cd libwasmvm && cargo build)
-	cp libwasmvm/target/debug/$(SHARED_LIB_SRC) internal/api/$(SHARED_LIB_DST)
+	cp libwasmvm/target/debug/$(SHARED_LIB_SRC) api/$(SHARED_LIB_DST)
 	make update-bindings
 
 # use release build to actually ship - smaller and much faster
@@ -49,7 +49,7 @@ build-rust-debug:
 # enable stripping through cargo (if that is desired).
 build-rust-release:
 	(cd libwasmvm && cargo build --release)
-	cp libwasmvm/target/release/$(SHARED_LIB_SRC) internal/api/$(SHARED_LIB_DST)
+	cp libwasmvm/target/release/$(SHARED_LIB_SRC) api/$(SHARED_LIB_DST)
 	make update-bindings
 	@ #this pulls out ELF symbols, 80% size reduction!
 
@@ -77,8 +77,8 @@ release-build-alpine:
 	rm -rf libwasmvm/target/x86_64-unknown-linux-musl/release
 	# build the muslc *.a file
 	docker run --rm -u $(USER_ID):$(USER_GROUP) -v $(shell pwd)/libwasmvm:/code $(BUILDERS_PREFIX)-alpine
-	cp libwasmvm/artifacts/libwasmvm_muslc.x86_64.a internal/api
-	cp libwasmvm/artifacts/libwasmvm_muslc.aarch64.a internal/api
+	cp libwasmvm/artifacts/libwasmvm_muslc.x86_64.a api
+	cp libwasmvm/artifacts/libwasmvm_muslc.aarch64.a api
 	make update-bindings
 
 # Creates a release build in a containerized build environment of the shared library for glibc Linux (.so)
@@ -87,8 +87,8 @@ release-build-linux:
 	rm -rf libwasmvm/target/x86_64-unknown-linux-gnu/release
 	rm -rf libwasmvm/target/aarch64-unknown-linux-gnu/release
 	docker run --rm -u $(USER_ID):$(USER_GROUP) -v $(shell pwd)/libwasmvm:/code $(BUILDERS_PREFIX)-centos7 build_linux.sh
-	cp libwasmvm/artifacts/libwasmvm.x86_64.so internal/api
-	cp libwasmvm/artifacts/libwasmvm.aarch64.so internal/api
+	cp libwasmvm/artifacts/libwasmvm.x86_64.so api
+	cp libwasmvm/artifacts/libwasmvm.aarch64.so api
 	make update-bindings
 
 # Creates a release build in a containerized build environment of the shared library for macOS (.dylib)
@@ -97,7 +97,7 @@ release-build-macos:
 	rm -rf libwasmvm/target/x86_64-apple-darwin/release
 	rm -rf libwasmvm/target/aarch64-apple-darwin/release
 	docker run --rm -u $(USER_ID):$(USER_GROUP) -v $(shell pwd)/libwasmvm:/code $(BUILDERS_PREFIX)-cross build_macos.sh
-	cp libwasmvm/artifacts/libwasmvm.dylib internal/api
+	cp libwasmvm/artifacts/libwasmvm.dylib api
 	make update-bindings
 
 # Creates a release build in a containerized build environment of the static library for macOS (.a)
@@ -106,7 +106,7 @@ release-build-macos-static:
 	rm -rf libwasmvm/target/x86_64-apple-darwin/release
 	rm -rf libwasmvm/target/aarch64-apple-darwin/release
 	docker run --rm -u $(USER_ID):$(USER_GROUP) -v $(shell pwd)/libwasmvm:/code $(BUILDERS_PREFIX)-cross build_macos_static.sh
-	cp libwasmvm/artifacts/libwasmvmstatic_darwin.a internal/api/libwasmvmstatic_darwin.a
+	cp libwasmvm/artifacts/libwasmvmstatic_darwin.a api/libwasmvmstatic_darwin.a
 	make update-bindings
 
 # Creates a release build in a containerized build environment of the shared library for Windows (.dll)
@@ -114,13 +114,13 @@ release-build-windows:
 	# Builders should not write their target folder into the host file system (https://github.com/CosmWasm/wasmvm/issues/437)
 	rm -rf libwasmvm/target/x86_64-pc-windows-gnu/release
 	docker run --rm -u $(USER_ID):$(USER_GROUP) -v $(shell pwd)/libwasmvm:/code $(BUILDERS_PREFIX)-cross build_windows.sh
-	cp libwasmvm/target/x86_64-pc-windows-gnu/release/wasmvm.dll internal/api
+	cp libwasmvm/target/x86_64-pc-windows-gnu/release/wasmvm.dll api
 	make update-bindings
 
 update-bindings:
 # After we build libwasmvm, we have to copy the generated bindings for Go code to use.
 # We cannot use symlinks as those are not reliably resolved by `go get` (https://github.com/CosmWasm/wasmvm/pull/235).
-	cp libwasmvm/bindings.h internal/api
+	cp libwasmvm/bindings.h api
 
 release-build:
 	# Write like this because those must not run in parallel

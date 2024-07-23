@@ -6,16 +6,20 @@ mod args;
 mod cache;
 mod calls;
 mod db;
+mod env;
 mod error;
 mod gas_meter;
 mod gas_report;
 mod iterator;
 mod memory;
+mod oracle_calls;
 mod querier;
+mod span;
 mod storage;
 mod test_utils;
 mod tests;
 mod version;
+mod vm;
 mod vtables;
 
 // We only interact with this crate via `extern "C"` interfaces, not those public

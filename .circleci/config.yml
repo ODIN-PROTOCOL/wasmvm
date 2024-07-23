@@ -9,6 +9,11 @@ jobs:
     docker:
       - image: cimg/rust:1.73.0
     steps:
+      - run:
+          name: Install packages
+          command: |
+            sudo apt update
+            sudo apt install libgmp3-dev
       - checkout
       - run:
           name: Show Rust version information
@@ -33,8 +38,8 @@ jobs:
             fi
       - run:
           # It is easy to update libwasmvm/bindings.h as part of the development but forget `make update-bindings`
-          name: Ensure internal/api/bindings.h is up to date
-          command: diff libwasmvm/bindings.h internal/api/bindings.h
+          name: Ensure api/bindings.h is up to date
+          command: diff libwasmvm/bindings.h api/bindings.h
       - run:
           name: Check Rust formatting
           working_directory: libwasmvm
@@ -201,7 +206,7 @@ jobs:
       - run:
           name: Test package "cosmwasm" without cgo
           command: CGO_ENABLED=0 go test .
-      
+
   # Build types and cosmwasm with libwasmvm linking disabled
   nolink_libwasmvm:
     docker:
@@ -269,6 +274,11 @@ jobs:
     docker:
       - image: cimg/rust:1.73.0
     steps:
+      - run:
+          name: Install packages
+          command: |
+            sudo apt update
+            sudo apt install libgmp3-dev
       - checkout
       - run:
           name: Show version information
@@ -281,7 +291,7 @@ jobs:
           name: Create release build of libwasmvm
           command: make build-rust
       - persist_to_workspace:
-          root: ./internal/api
+          root: ./api
           paths:
             - libwasmvm.x86_64.so
       - save_cache:
@@ -308,7 +318,7 @@ jobs:
           at: /tmp/builds
       - run:
           name: Copy .so build
-          command: cp /tmp/builds/libwasmvm.x86_64.so ./internal/api
+          command: cp /tmp/builds/libwasmvm.x86_64.so ./api
       - run:
           name: Build Go project
           command: make build-go
@@ -330,7 +340,7 @@ jobs:
       - run: make test-alpine
       - run:
           name: Debug build results
-          command: ls -l ./internal/api
+          command: ls -l ./api
 
   deploy_to_git:
     machine:
@@ -358,7 +368,7 @@ jobs:
       #     command: make release-build-windows
       - run:
           name: Debug build results
-          command: ls -l ./internal/api
+          command: ls -l ./api
       - run:
           name: Configure git user
           # This is not a GitHub user and no permissions can be configured other than "push access", which
@@ -370,7 +380,7 @@ jobs:
           name: Check-in and push new libraries
           command: |
             git status
-            git add ./internal/api
+            git add ./api
             git commit --allow-empty -m '[skip ci] Built release libraries'
             git push origin $CIRCLE_BRANCH
 
@@ -392,11 +402,8 @@ jobs:
           name: Build static library for Alpine
           command: make release-build-alpine
       - run:
-          name: Build static library for MacOS
-          command: make release-build-macos-static
-      - run:
           name: Debug build results
-          command: ls -l ./internal/api
+          command: ls -l ./api
       # Deploy to GitHub releases on tag builds. At some point we might want to extract
       # those steps into a separate job for better maintainability.
       - when:
@@ -408,14 +415,13 @@ jobs:
                   mkdir artifacts
 
                   # Static (from build)
-                  cp ./internal/api/libwasmvm_muslc.x86_64.a artifacts/
-                  cp ./internal/api/libwasmvm_muslc.aarch64.a artifacts/
-                  cp ./internal/api/libwasmvmstatic_darwin.a artifacts/
+                  cp ./api/libwasmvm_muslc.x86_64.a artifacts/
+                  cp ./api/libwasmvm_muslc.aarch64.a artifacts/
 
                   # Shared (from git)
-                  cp ./internal/api/libwasmvm.aarch64.so artifacts/
-                  cp ./internal/api/libwasmvm.x86_64.so artifacts/
-                  cp ./internal/api/libwasmvm.dylib artifacts/
+                  cp ./api/libwasmvm.aarch64.so artifacts/
+                  cp ./api/libwasmvm.x86_64.so artifacts/
+                  cp ./api/libwasmvm.dylib artifacts/
             - run:
                 name: Create checksums
                 working_directory: artifacts
@@ -429,8 +435,15 @@ jobs:
                   # Check if tag is a version without suffix (e.g. -rc or -beta) and
                   # set prerelease flag accordingly
                   [[ "$TAG" =~ ^v[0-9]+.[0-9]+.[0-9]+$ ]] || PRERELEASE=-prerelease
+                  CIRCLE_PROJECT_USERNAME_L="ODIN-PROTOCOL"
+                  CIRCLE_PROJECT_REPONAME_L="wasmvm"
+                  echo $CIRCLE_PROJECT_USERNAME
+                  echo $CIRCLE_PROJECT_REPONAME
+                  echo $CIRCLE_SHA1
+                  echo $PRERELEASE
+                  echo $TAG
                   ghr -t "$GITHUB_TOKEN" \
-                    -u "$CIRCLE_PROJECT_USERNAME" -r "$CIRCLE_PROJECT_REPONAME" \
+                    -u "$CIRCLE_PROJECT_USERNAME_L" -r "$CIRCLE_PROJECT_REPONAME_L" \
                     -c "$CIRCLE_SHA1" \
                     -n "$TITLE" -b "$BODY" \
                     -delete \
