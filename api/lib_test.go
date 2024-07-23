@@ -127,7 +127,7 @@ func TestStoreCodeAndGetCode(t *testing.T) {
 	cache, cleanup := withCache(t)
 	defer cleanup()
 
-	wasm, err := os.ReadFile("../../testdata/hackatom.wasm")
+	wasm, err := os.ReadFile("../testdata/hackatom.wasm")
 	require.NoError(t, err)
 
 	checksum, err := StoreCode(cache, wasm)
@@ -144,7 +144,7 @@ func TestRemoveCode(t *testing.T) {
 	cache, cleanup := withCache(t)
 	defer cleanup()
 
-	wasm, err := os.ReadFile("../../testdata/hackatom.wasm")
+	wasm, err := os.ReadFile("../testdata/hackatom.wasm")
 	require.NoError(t, err)
 
 	checksum, err := StoreCode(cache, wasm)
@@ -172,7 +172,7 @@ func TestStoreCodeUnchecked(t *testing.T) {
 	cache, cleanup := withCache(t)
 	defer cleanup()
 
-	wasm, err := os.ReadFile("../../testdata/hackatom.wasm")
+	wasm, err := os.ReadFile("../testdata/hackatom.wasm")
 	require.NoError(t, err)
 
 	checksum, err := StoreCodeUnchecked(cache, wasm)
@@ -189,7 +189,7 @@ func TestPin(t *testing.T) {
 	cache, cleanup := withCache(t)
 	defer cleanup()
 
-	wasm, err := os.ReadFile("../../testdata/hackatom.wasm")
+	wasm, err := os.ReadFile("../testdata/hackatom.wasm")
 	require.NoError(t, err)
 
 	checksum, err := StoreCode(cache, wasm)
@@ -232,7 +232,7 @@ func TestUnpin(t *testing.T) {
 	cache, cleanup := withCache(t)
 	defer cleanup()
 
-	wasm, err := os.ReadFile("../../testdata/hackatom.wasm")
+	wasm, err := os.ReadFile("../testdata/hackatom.wasm")
 	require.NoError(t, err)
 
 	checksum, err := StoreCode(cache, wasm)
@@ -277,7 +277,7 @@ func TestGetMetrics(t *testing.T) {
 	assert.Equal(t, &types.Metrics{}, metrics)
 
 	// Store contract
-	wasm, err := os.ReadFile("../../testdata/hackatom.wasm")
+	wasm, err := os.ReadFile("../testdata/hackatom.wasm")
 	require.NoError(t, err)
 	checksum, err := StoreCode(cache, wasm)
 	require.NoError(t, err)
@@ -387,7 +387,7 @@ func TestInstantiate(t *testing.T) {
 	defer cleanup()
 
 	// create contract
-	wasm, err := os.ReadFile("../../testdata/hackatom.wasm")
+	wasm, err := os.ReadFile("../testdata/hackatom.wasm")
 	require.NoError(t, err)
 	checksum, err := StoreCode(cache, wasm)
 	require.NoError(t, err)
@@ -1014,23 +1014,23 @@ func requireQueryOk(t *testing.T, res []byte) []byte {
 }
 
 func createHackatomContract(t testing.TB, cache Cache) []byte {
-	return createContract(t, cache, "../../testdata/hackatom.wasm")
+	return createContract(t, cache, "../testdata/hackatom.wasm")
 }
 
 func createCyberpunkContract(t testing.TB, cache Cache) []byte {
-	return createContract(t, cache, "../../testdata/cyberpunk.wasm")
+	return createContract(t, cache, "../testdata/cyberpunk.wasm")
 }
 
 func createQueueContract(t testing.TB, cache Cache) []byte {
-	return createContract(t, cache, "../../testdata/queue.wasm")
+	return createContract(t, cache, "../testdata/queue.wasm")
 }
 
 func createReflectContract(t testing.TB, cache Cache) []byte {
-	return createContract(t, cache, "../../testdata/reflect.wasm")
+	return createContract(t, cache, "../testdata/reflect.wasm")
 }
 
 func createFloaty2(t testing.TB, cache Cache) []byte {
-	return createContract(t, cache, "../../testdata/floaty_2.0.wasm")
+	return createContract(t, cache, "../testdata/floaty_2.0.wasm")
 }
 
 func createContract(t testing.TB, cache Cache, wasmFile string) []byte {

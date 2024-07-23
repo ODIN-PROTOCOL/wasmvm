@@ -15,7 +15,7 @@ func TestValidateAddressFailure(t *testing.T) {
 	defer cleanup()
 
 	// create contract
-	wasm, err := os.ReadFile("../../testdata/hackatom.wasm")
+	wasm, err := os.ReadFile("../testdata/hackatom.wasm")
 	require.NoError(t, err)
 	checksum, err := StoreCode(cache, wasm)
 	require.NoError(t, err)
