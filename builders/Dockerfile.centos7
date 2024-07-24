@@ -5,8 +5,14 @@ RUN sed -i s/mirror.centos.org/vault.centos.org/g /etc/yum.repos.d/*.repo \
     && sed -i s/^mirrorlist=http/#mirrorlist=http/g /etc/yum.repos.d/*.repo
 
 RUN yum clean all \
-  && yum makecache
-
-RUN yum install -y gmp-devel
+  && yum makecache \
+  && yum install -y gmp-devel \
+  && wget https://buildlogs.centos.org/centos/7/os/aarch64/Packages/gmp-6.0.0-11.el7.aarch64.rpm \
+  && sha256sum gmp-6.0.0-11.el7.aarch64.rpm | grep 904958c2803d356f26a2d8171e29f68a9ff3302643b2077518c33a5f3e62cae5 \
+  && wget https://buildlogs.centos.org/centos/7/os/aarch64/Packages/gmp-devel-6.0.0-11.el7.aarch64.rpm \
+  && sha256sum gmp-devel-6.0.0-11.el7.aarch64.rpm | grep 90eb4acbd55dcf7e220975543846fc3cba3efa8195ca3446100bf360c4ee3aaf \
+  && rpm -ivh --ignorearch gmp-6.0.0-11.el7.aarch64.rpm \
+  && rpm -ivh --ignorearch gmp-devel-6.0.0-11.el7.aarch64.rpm \
+  && rm gmp*-6.0.0-11.el7.aarch64.rpm
 
 CMD ["bash", "-c", "echo 'Argument missing. Pass one build script (e.g. build_linux.sh) to docker run' && exit 1"]
