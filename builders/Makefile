@@ -2,9 +2,15 @@
 # See builders/README.md
 BUILDERS_PREFIX := odinprotocol/go-ext-builder:0019
 
-.PHONY: docker-image-centos7
-docker-image-centos7:
-	docker build --pull . -t $(BUILDERS_PREFIX)-centos7 -f ./Dockerfile.centos7
+#  Should be depreacated..!?
+# .PHONY: docker-image-centos7
+# docker-image-centos7:
+# 	docker build --pull . -t $(BUILDERS_PREFIX)-centos7 -f ./Dockerfile.centos7
+# 	docker push $(BUILDERS_PREFIX)-centos7
+
+.PHONY: docker-image-debian
+docker-image-debian:
+	docker build --pull . -t $(BUILDERS_PREFIX)-debian -f ./Dockerfile.debian
 
 .PHONY: docker-image-cross
 docker-image-cross:
@@ -15,10 +21,10 @@ docker-image-alpine:
 	docker build --pull . -t $(BUILDERS_PREFIX)-alpine -f ./Dockerfile.alpine
 
 .PHONY: docker-images
-docker-images: docker-image-centos7 docker-image-cross docker-image-alpine
+docker-images: docker-image-debian docker-image-cross docker-image-alpine
 
-.PHONY: docker-publish
+.PHONY: docker-images
 docker-publish: docker-images
+	docker push $(BUILDERS_PREFIX)-debian
 	docker push $(BUILDERS_PREFIX)-cross
-	docker push $(BUILDERS_PREFIX)-centos7
 	docker push $(BUILDERS_PREFIX)-alpine

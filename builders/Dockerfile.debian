@@ -1,0 +1,24 @@
+FROM rust:1.73.0-bullseye
+
+# Install build dependencies
+RUN dpkg --add-architecture arm64 \
+  && apt-get update \
+  && apt install -y clang gcc g++ zlib1g-dev libmpc-dev libmpfr-dev libgmp-dev build-essential cmake gcc-aarch64-linux-gnu libgmp-dev:arm64
+
+
+# allow non-root user to download more deps later
+RUN chmod -R 777 /usr/local/cargo
+
+## COPY BUILD SCRIPTS
+
+WORKDIR /code
+
+COPY guest/*.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/*.sh
+
+RUN mkdir /.cargo
+RUN chmod +rx /.cargo
+COPY guest/cargo-config /.cargo/config
+RUN rustup target add aarch64-unknown-linux-gnu
+
+CMD ["bash", "-c", "echo 'Argument missing. Pass one build script (e.g. build_macos.sh) to docker run' && exit 1"]
