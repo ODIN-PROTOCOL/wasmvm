@@ -1,8 +1,10 @@
 FROM rust:1.73.0-bullseye
 
 # Install build dependencies
-RUN apt-get update \
-  && apt install -y clang gcc g++ zlib1g-dev libmpc-dev libmpfr-dev libgmp-dev build-essential cmake \
+
+RUN dpkg --add-architecture arm64 \ 
+  && apt-get update \
+  && apt install -y clang gcc g++ zlib1g-dev libmpc-dev libgmp-dev libmpfr-dev libgmp-dev libgmp-dev:arm64 build-essential cmake \
   # Support for Windows cross-compile
   mingw-w64
 
