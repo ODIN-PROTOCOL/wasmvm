@@ -323,9 +323,9 @@ jobs:
       - run:
           name: Check .so files
           command: |
-            ls -lA ./internal/api/libwasmvm.*.so
-            sha256sum ./internal/api/libwasmvm.*.so
-            ldd ./internal/api/libwasmvm.x86_64.so
+            ls -lA ./api/libwasmvm.*.so
+            sha256sum ./api/libwasmvm.*.so
+            ldd ./api/libwasmvm.x86_64.so
       - run:
           name: Build Go project
           command: make build-go
