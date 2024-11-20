@@ -14,4 +14,6 @@
 tmp
 a.out
 
+.DS_Store
+
 vendor

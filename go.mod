@@ -5,6 +5,7 @@ go 1.21
 require (
 	github.com/bytecodealliance/wasmtime-go/v20 v20.0.0
 	github.com/google/btree v1.0.0
+	github.com/shamaton/msgpack/v2 v2.2.0
 	github.com/stretchr/testify v1.8.1
 	golang.org/x/sys v0.16.0
 )
