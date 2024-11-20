@@ -393,7 +393,7 @@ func TestGetPinnedMetrics(t *testing.T) {
 	assert.Equal(t, &types.PinnedMetrics{PerModule: make([]types.PerModuleEntry, 0)}, metrics)
 
 	// Store contract 1
-	wasm, err := os.ReadFile("../../testdata/hackatom.wasm")
+	wasm, err := os.ReadFile("../testdata/hackatom.wasm")
 	require.NoError(t, err)
 	checksum, err := StoreCode(cache, wasm)
 	require.NoError(t, err)
@@ -402,7 +402,7 @@ func TestGetPinnedMetrics(t *testing.T) {
 	require.NoError(t, err)
 
 	// Store contract 2
-	cyberpunkWasm, err := os.ReadFile("../../testdata/cyberpunk.wasm")
+	cyberpunkWasm, err := os.ReadFile("../testdata/cyberpunk.wasm")
 	require.NoError(t, err)
 	cyberpunkChecksum, err := StoreCode(cache, cyberpunkWasm)
 	require.NoError(t, err)
