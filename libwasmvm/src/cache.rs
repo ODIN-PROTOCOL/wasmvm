@@ -5,6 +5,7 @@ use std::str::from_utf8;
 
 use cosmwasm_std::Checksum;
 use cosmwasm_vm::{capabilities_from_csv, Cache, CacheOptions, Size};
+use serde::Serialize;
 
 use crate::api::GoApi;
 use crate::args::{AVAILABLE_CAPABILITIES_ARG, CACHE_ARG, CHECKSUM_ARG, DATA_DIR_ARG, WASM_ARG};
@@ -253,6 +254,11 @@ pub struct AnalysisReport {
     /// An UTF-8 encoded comma separated list of required capabilities.
     /// This is never None/nil.
     pub required_capabilities: UnmanagedVector,
+    /// The migrate version of the contract.
+    /// This is None if the contract does not have a migrate version and the `migrate` entrypoint
+    /// needs to be called for every migration (if present).
+    /// If it is `Some(version)`, it only needs to be called if the `version` increased.
+    pub contract_migrate_version: OptionalU64,
 }
 
 impl From<cosmwasm_vm::AnalysisReport> for AnalysisReport {
@@ -261,6 +267,8 @@ impl From<cosmwasm_vm::AnalysisReport> for AnalysisReport {
             has_ibc_entry_points,
             required_capabilities,
             entrypoints,
+            contract_migrate_version,
+            ..
         } = report;
 
         let required_capabilities_utf8 = set_to_csv(required_capabilities).into_bytes();
@@ -269,6 +277,30 @@ impl From<cosmwasm_vm::AnalysisReport> for AnalysisReport {
             has_ibc_entry_points,
             required_capabilities: UnmanagedVector::new(Some(required_capabilities_utf8)),
             entrypoints: UnmanagedVector::new(Some(entrypoints)),
+            contract_migrate_version: contract_migrate_version.into(),
+        }
+    }
+}
+
+/// A version of `Option<u64>` that can be used safely in FFI.
+#[derive(Copy, Clone, Default, Debug, PartialEq, Eq)]
+#[repr(C)]
+pub struct OptionalU64 {
+    is_some: bool,
+    value: u64,
+}
+
+impl From<Option<u64>> for OptionalU64 {
+    fn from(opt: Option<u64>) -> Self {
+        match opt {
+            None => OptionalU64 {
+                is_some: false,
+                value: 0, // value is ignored
+            },
+            Some(value) => OptionalU64 {
+                is_some: true,
+                value,
+            },
         }
     }
 }
@@ -382,6 +414,64 @@ pub extern "C" fn get_metrics(
 #[allow(clippy::unnecessary_wraps)] // Keep unused Result for consistent boilerplate for all fn do_*
 fn do_get_metrics(cache: &mut Cache<GoApi, GoStorage, GoQuerier>) -> Result<Metrics, Error> {
     Ok(cache.metrics().into())
+}
+
+#[derive(Serialize)]
+struct PerModuleMetrics {
+    hits: u32,
+    size: usize,
+}
+
+impl From<cosmwasm_vm::PerModuleMetrics> for PerModuleMetrics {
+    fn from(value: cosmwasm_vm::PerModuleMetrics) -> Self {
+        Self {
+            hits: value.hits,
+            size: value.size,
+        }
+    }
+}
+
+#[derive(Serialize)]
+struct PinnedMetrics {
+    // TODO: Remove the array usage as soon as `Checksum` has a stable wire format in msgpack
+    per_module: Vec<([u8; 32], PerModuleMetrics)>,
+}
+
+impl From<cosmwasm_vm::PinnedMetrics> for PinnedMetrics {
+    fn from(value: cosmwasm_vm::PinnedMetrics) -> Self {
+        Self {
+            per_module: value
+                .per_module
+                .into_iter()
+                .map(|(checksum, metrics)| (*checksum.as_ref(), metrics.into()))
+                .collect(),
+        }
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn get_pinned_metrics(
+    cache: *mut cache_t,
+    error_msg: Option<&mut UnmanagedVector>,
+) -> UnmanagedVector {
+    let r = match to_cache(cache) {
+        Some(c) => {
+            catch_unwind(AssertUnwindSafe(move || do_get_pinned_metrics(c))).unwrap_or_else(|err| {
+                eprintln!("Panic in do_get_pinned_metrics: {err:?}");
+                Err(Error::panic())
+            })
+        }
+        None => Err(Error::unset_arg(CACHE_ARG)),
+    };
+    handle_c_error_default(r, error_msg)
+}
+
+fn do_get_pinned_metrics(
+    cache: &mut Cache<GoApi, GoStorage, GoQuerier>,
+) -> Result<UnmanagedVector, Error> {
+    let pinned_metrics = PinnedMetrics::from(cache.pinned_metrics());
+    let edgerunner = rmp_serde::to_vec(&pinned_metrics)?;
+    Ok(UnmanagedVector::new(Some(edgerunner)))
 }
 
 /// frees a cache reference
@@ -732,6 +822,8 @@ mod tests {
             hackatom_report.required_capabilities.consume().unwrap(),
             b""
         );
+        assert!(hackatom_report.contract_migrate_version.is_some);
+        assert_eq!(hackatom_report.contract_migrate_version.value, 42);
 
         let mut error_msg = UnmanagedVector::default();
         let ibc_reflect_report = analyze_code(
@@ -944,7 +1036,7 @@ mod tests {
         assert_eq!(elements_memory_cache, 0);
         assert_approx_eq!(
             size_pinned_memory_cache,
-            2282344,
+            3400000,
             "0.2",
             "size_pinned_memory_cache: {size_pinned_memory_cache}"
         );

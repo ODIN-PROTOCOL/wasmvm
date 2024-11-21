@@ -14,12 +14,31 @@ any machine that can run Docker can do the cross-compilation.
 
 ## Docker Hub images
 
-See https://hub.docker.com/r/cosmwasm/go-ext-builder/tags for all available
-versions of the builder images.
+See those DockerHub repos for all available versions of the builder images.
+
+- From version 0100: https://hub.docker.com/r/cosmwasm/libwasmvm-builder/tags
+- Before version 0100: https://hub.docker.com/r/cosmwasm/go-ext-builder/tags
 
 ## Changelog
 
 **Unreleased**
+
+**Version 0100:**
+
+- Rename builder image from cosmwasm/go-ext-builder to
+  cosmwasm/libwasmvm-builder
+- Replace CentOS with Debian image for GNU linux builds
+- Avoid using a target folder in the host system. Instead the folder /target in
+  the guest is used. Due to this change we can now drop the argument
+  `-u $(USER_ID):$(USER_GROUP)` when using builders. ([#437])
+- Build all images with `--platform=linux/amd64` to avoid accidental ARM builds
+
+[#437]: https://github.com/CosmWasm/wasmvm/issues/437
+
+**Version 0019:**
+
+- Bump `OSX_VERSION_MIN` to 10.15.
+- Update Rust to 1.77.0.
 
 **Version 0018:**
 
@@ -118,8 +137,9 @@ versions of the builder images.
 
 ## Usage
 
-Create a local docker image, capable of cross-compling linux and macos dynamic
-libs:
+Create the Docker images, capable of cross-compling Linux and MacOS dynamic
+libs. As the builder images are all x86_64, it can be slow and memory intense to
+do this on a different architecture:
 
 ```sh
 (cd builders && make docker-images)
